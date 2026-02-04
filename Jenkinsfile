@@ -12,8 +12,8 @@ pipeline {
     stage('Build & Test') {
       steps {
         withCredentials([
-          file(credentialsId: 'public-complaint-app-client', variable: 'CLIENT_ENV'),
-          file(credentialsId: 'public-complaint-app-server', variable: 'SERVER_ENV'),
+          file(credentialsId: 'complaint-platform-client', variable: 'CLIENT_ENV'),
+          file(credentialsId: 'complaint-platform-server', variable: 'SERVER_ENV'),
         ]) {
           sh '''
             cp "$CLIENT_ENV" client/.env 

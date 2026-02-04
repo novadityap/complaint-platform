@@ -1,11 +1,15 @@
 services:
   server:
-    image: novadityap/public-complaint-app-server-dev
-    container_name: public-complaint-app-server-dev
+    image: novadityap/complaint-platform-server-dev
+    container_name: complaint-platform-server-dev
     build:
       context: ./server
       dockerfile: Dockerfile
-    command: php artisan serve --host=0.0.0.0
+    command: >
+      sh -c "
+        php artisan migrate:fresh --seed --force && 
+        php artisan serve --host=0.0.0.0
+      "
     env_file:
       - ./server/.env
     ports:
@@ -16,11 +20,11 @@ services:
     volumes:
       - ./server:/app
     networks:
-      - public-complaint-app-dev
+      - complaint-platform-dev
 
   client:
-    image: novadityap/public-complaint-app-client-dev
-    container_name: public-complaint-app-client-dev
+    image: novadityap/complaint-platform-client-dev
+    container_name: complaint-platform-client-dev
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -33,25 +37,25 @@ services:
     volumes:
       - ./client:/app
     networks:
-      - public-complaint-app-dev
+      - complaint-platform-dev
 
   postgres:
-    container_name: public-complaint-app-postgres-dev
+    container_name: complaint-platform-postgres-dev
     image: postgres:17-alpine
     ports:
       - "5432:5432"
     volumes:
-      - public-complaint-postgres-data:/var/lib/postgresql/data
+      - complaint-platform-postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: public_complaint_app_dev
+      POSTGRES_DB: complaint_platform_dev
     networks:
-      - public-complaint-app-dev
+      - complaint-platform-dev
 
 volumes:
-  public-complaint-postgres-data:
-    name: public-complaint-postgres-data
+  complaint-platform-postgres-data:
+    name: complaint-platform-postgres-data
 networks:
-  public-complaint-app-dev:
-    name: public-complaint-app-dev
+  complaint-platform-dev:
+    name: complaint-platform-dev
